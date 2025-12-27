@@ -399,6 +399,28 @@
             transform: scale(1);
         }
 
+        @media (max-width: 639px) {
+            .orbital-center {
+                width: 96px;
+                height: 96px;
+            }
+
+            .orbital-option {
+                width: 90px;
+                height: 90px;
+                --radius-current: calc(var(--radius, 140px) * 0.8);
+            }
+
+            .orbital-option .orbital-label {
+                font-size: 9px;
+                letter-spacing: 0.2em;
+            }
+
+            .orbital-option-contents {
+                padding: 10px;
+            }
+        }
+
         @media (min-width: 640px) {
             .orbital-center {
                 width: 150px;
@@ -866,6 +888,10 @@
 
             const button = existing;
             const safePadding = 140;
+            const mobileCatchThreshold = 10;
+            const desktopCatchThreshold = 35;
+            const isMobile = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || window.innerWidth < 768;
+            const catchThreshold = isMobile ? mobileCatchThreshold : desktopCatchThreshold;
             const snapPoints = [
                 { x: 0.3, y: 0.25 },
                 { x: 0.7, y: 0.25 },
@@ -879,20 +905,54 @@
                 return Math.max(min, Math.min(max, value));
             }
 
-            function placeButton(point) {
+            function distanceBetween(x1, y1, x2, y2) {
+                const dx = x1 - x2;
+                const dy = y1 - y2;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            function getPointPosition(point) {
                 const rect = button.getBoundingClientRect();
                 const maxX = window.innerWidth - rect.width - safePadding;
                 const maxY = window.innerHeight - rect.height - safePadding;
                 const targetX = clamp(point.x * window.innerWidth, safePadding, maxX);
                 const targetY = clamp(point.y * window.innerHeight, safePadding, maxY);
-                button.style.left = `${targetX}px`;
-                button.style.top = `${targetY}px`;
+                return { x: targetX, y: targetY };
+            }
+
+            function placeButton(point) {
+                const position = getPointPosition(point);
+                button.style.left = `${position.x}px`;
+                button.style.top = `${position.y}px`;
             }
 
             let attemptCount = 0;
             let isCatchable = false;
 
-            function hop() {
+            function pickEscapePoint(pointerX, pointerY) {
+                const rect = button.getBoundingClientRect();
+                const baseDistance = isMobile ? 140 : 120;
+                const distanceStep = isMobile ? 12 : 8;
+                const minDistance = baseDistance + attemptCount * distanceStep;
+                const candidates = snapPoints.map((point) => {
+                    const position = getPointPosition(point);
+                    const centerX = position.x + rect.width / 2;
+                    const centerY = position.y + rect.height / 2;
+                    const distance = distanceBetween(pointerX, pointerY, centerX, centerY);
+                    return { point, distance };
+                });
+                const farEnough = candidates.filter((candidate) => candidate.distance >= minDistance);
+                const choices = farEnough.length > 0 ? farEnough : candidates.sort((a, b) => b.distance - a.distance).slice(0, 2);
+                const chosen = choices[Math.floor(Math.random() * choices.length)];
+                return chosen.point;
+            }
+
+            function hop(pointerX, pointerY) {
+                if (typeof pointerX === 'number' && typeof pointerY === 'number') {
+                    const point = pickEscapePoint(pointerX, pointerY);
+                    placeButton(point);
+                    return;
+                }
                 const point = snapPoints[Math.floor(Math.random() * snapPoints.length)];
                 placeButton(point);
             }
@@ -921,13 +981,13 @@
 
                 if (distance < 120 && !isCatchable) {
                     attemptCount += 1;
-                    if (attemptCount >= 50) {
+                    if (attemptCount >= catchThreshold) {
                         isCatchable = true;
                         button.classList.add('is-caught');
                         settle();
                         return;
                     }
-                    hop();
+                    hop(event.clientX, event.clientY);
                 }
             });
 
@@ -935,13 +995,13 @@
                 if (!isCatchable) {
                     event.preventDefault();
                     attemptCount += 1;
-                    if (attemptCount >= 50) {
+                    if (attemptCount >= catchThreshold) {
                         isCatchable = true;
                         button.classList.add('is-caught');
                         settle();
                         return;
                     }
-                    hop();
+                    hop(event.clientX, event.clientY);
                 } else {
                     if (!document.documentElement.classList.contains('dark')) {
                         toggleTheme();
@@ -1013,15 +1073,6 @@
 
             orbitTweenId = requestAnimationFrame(tick);
         }
-
-        const WOODWORK_MOSAIC = [
-            'col-span-6 row-span-3',
-            'col-span-3 row-span-2',
-            'col-span-3 row-span-2',
-            'col-span-4 row-span-3',
-            'col-span-2 row-span-2',
-            'col-span-2 row-span-2'
-        ];
 
         function initBondSwitches() {
             const orbitSwitch = document.getElementById('switch-orbit');
@@ -1159,21 +1210,21 @@
                             </div>
                         </header>
 
-                        <div class="grid grid-cols-6 auto-rows-[90px] md:auto-rows-[120px] gap-4">
-                            ${DATA.projects.map((p, i) => {
-                                const span = WOODWORK_MOSAIC[i % WOODWORK_MOSAIC.length];
-                                return `
-                                    <button onclick="openProject(${p.id})" class="group ${span} relative overflow-hidden bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
-                                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                                            style="background-image: url('${p.img}');">
-                                        </div>
-                                        <div class="absolute inset-0 bg-gradient-to-t from-forest-base/90 via-forest-base/10 to-transparent"></div>
-                                        <div class="absolute bottom-0 left-0 p-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${DATA.projects.map((p, i) => `
+                                <button onclick="openProject(${p.id})" class="group relative overflow-hidden rounded-sm bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
+                                    <div class="aspect-[4/3] w-full overflow-hidden">
+                                        <img src="${p.img}" alt="${p.title}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                                    </div>
+                                    <div class="p-4 border-t border-forest-moss/10 bg-forest-surface">
+                                        <div class="flex items-baseline justify-between gap-3">
+                                            <h3 class="font-serif text-xl text-forest-mist">${p.title}</h3>
                                             <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
                                         </div>
-                                    </button>
-                                `;
-                            }).join('')}
+                                        <p class="mt-2 text-sm text-forest-stone">${p.desc}</p>
+                                    </div>
+                                </button>
+                            `).join('')}
                         </div>
                      </div>
                 `;
