@@ -1,0 +1,1434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mc Tiernan</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500&family=Lora:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="icon-transparent.png" type="image/png">
+
+    <!-- Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"DM Sans"', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        forest: {
+                            base: "var(--color-base)",       
+                            surface: "var(--color-surface)",   
+                            mist: "var(--color-mist)",       
+                            moss: "#6B8E6B",       
+                            fern: "#4A6755",       
+                            timber: "#9C836A",     
+                            stone: "var(--color-stone)",      
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.08%22/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'sway-slow': 'sway 15s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        sway: {
+                            '0%, 100%': { transform: 'rotate(0deg) translate(0,0)' },
+                            '33%': { transform: 'rotate(2deg) translate(10px, -10px)' },
+                            '66%': { transform: 'rotate(-1deg) translate(-5px, 5px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* THEME VARIABLES */
+        :root {
+            /* Light Mode (Mist) */
+            --color-base: #F0F4F2;
+            --color-surface: #FFFFFF;
+            --color-mist: #0C1C15; /* Text becomes dark */
+            --color-stone: #5C6B64;
+        }
+
+        .dark {
+            /* Dark Mode (Deep Forest) */
+            --color-base: #0C1C15;
+            --color-surface: #14261F;
+            --color-mist: #E8EFEA; /* Text becomes light */
+            --color-stone: #8B9792;
+        }
+
+        body {
+            background-color: var(--color-base);
+            color: var(--color-mist);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            cursor: none;
+        }
+        
+        .glass-forest {
+            background: var(--color-surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(107, 142, 107, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .glass-forest:hover {
+            border-color: rgba(107, 142, 107, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn {
+            position: relative;
+            padding-bottom: 4px;
+        }
+        
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0%;
+            height: 1px;
+            background-color: #6B8E6B; /* Moss */
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-btn:hover::after, .nav-btn.active::after {
+            width: 100%;
+        }
+
+        .bond-switches {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bond-switch {
+            position: relative;
+            width: 36px;
+            height: 18px;
+            background: rgba(12, 28, 21, 0.2);
+            border: 1px solid rgba(107, 142, 107, 0.35);
+            border-radius: 999px;
+            box-shadow: inset 0 0 6px rgba(12, 28, 21, 0.3);
+        }
+
+        .bond-switch input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .bond-switch .bond-lever {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: #E8EFEA;
+            box-shadow: 0 2px 6px rgba(12, 28, 21, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .bond-switch input:checked + .bond-lever {
+            transform: translateX(18px);
+            background: #6B8E6B;
+        }
+
+        .bond-label {
+            font-size: 9px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-stone);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .orbit-pinned .orbital-option {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .orbit-pinned .orbital-option-contents {
+            transform: scale(1);
+        }
+
+        /* 3D Tilt Effect CSS */
+        .tilt-card {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+        
+        .tilt-inner {
+            transform: translateZ(20px);
+        }
+
+        /* Custom scrollbar */
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .custom-cursor-dot,
+        .custom-cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 60;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .custom-cursor-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--color-mist);
+        }
+
+        .custom-cursor-ring {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            border: 1px solid var(--color-mist);
+            opacity: 0.6;
+        }
+
+        .custom-cursor-ring.is-hover {
+            transform: translate(-50%, -50%) scale(1.6);
+            opacity: 0.25;
+        }
+
+        .runaway-contact {
+            position: fixed;
+            z-index: 40;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(107, 142, 107, 0.35);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--color-mist);
+            font-family: "DM Sans", sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            transition: transform 0.4s ease, left 1.2s ease, top 1.2s ease, opacity 0.4s ease;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+        }
+
+        .dark .runaway-contact {
+            background: rgba(20, 38, 31, 0.9);
+            border-color: rgba(136, 0, 21, 0.35);
+        }
+
+        .runaway-contact.is-caught {
+            background: #6B8E6B;
+            border-color: #6B8E6B;
+            color: #FFFFFF;
+        }
+
+        .runaway-contact.is-docked {
+            position: static;
+            transform: none;
+            transition: none;
+            padding: 6px 10px;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            animation: dock-pulse 0.9s ease-out;
+        }
+
+        .orbital-shell {
+            position: relative;
+            --orbit-duration: 28s;
+        }
+
+        @property --orbit-pulse {
+            syntax: "<length>";
+            inherits: false;
+            initial-value: 0px;
+        }
+
+        .orbital-ring {
+            position: absolute;
+            inset: 12%;
+            border-radius: 999px;
+            border: 2px dashed rgba(136, 0, 21, 0.45);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            animation: spin-reverse 60s linear infinite;
+        }
+
+        .orbital-ring.inner {
+            inset: 28%;
+            border-style: solid;
+            border-color: rgba(176, 106, 106, 0.35);
+            border-width: 2px;
+            opacity: 0.8;
+            animation: spin-reverse 80s linear infinite;
+        }
+
+        .orbital-shell:hover .orbital-ring {
+            opacity: 1;
+        }
+
+        .orbital-center {
+            position: absolute;
+            inset: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(176, 106, 106, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .orbital-shell:hover .orbital-center {
+            transform: translate(-50%, -50%) scale(0.92);
+            opacity: 0.7;
+        }
+
+        .orbital-option {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(20, 38, 31, 0.9), rgba(12, 28, 21, 0.8));
+            border: 1px solid rgba(107, 142, 107, 0.35);
+            box-shadow: 0 12px 30px rgba(12, 28, 21, 0.35);
+            opacity: 0;
+            transition: opacity 0.6s ease, box-shadow 0.6s ease;
+            transition-delay: var(--delay, 0ms);
+            animation: orbit var(--orbit-duration) linear infinite, orbit-pulse 6s ease-in-out infinite;
+            animation-delay: var(--delay, 0ms), var(--delay, 0ms);
+            transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--radius-current, 140px) + var(--orbit-pulse)));
+            pointer-events: none;
+        }
+
+        .orbital-option:hover {
+            box-shadow: 0 18px 40px rgba(12, 28, 21, 0.5);
+        }
+
+        .orbital-option .orbital-label {
+            font-size: 11px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            color: #E8EFEA;
+        }
+
+        .orbital-option .orbital-glow {
+            position: absolute;
+            inset: 8px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, rgba(107, 142, 107, 0.25), transparent 70%);
+            opacity: 0.8;
+        }
+
+        .orbital-option-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: counter-orbit var(--orbit-duration) linear infinite;
+            animation-delay: var(--delay, 0ms);
+            transform: rotate(calc(-1 * var(--angle)));
+        }
+
+        .orbital-option-contents {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 16px;
+            transform: scale(0.85);
+            transition: transform 0.4s ease;
+        }
+
+        .dark .orbital-option {
+            background: #FFFFFF;
+            border-color: rgba(136, 0, 21, 0.4);
+            box-shadow: 0 12px 30px rgba(12, 28, 21, 0.35);
+        }
+
+        .dark .orbital-option .orbital-label {
+            color: #880015;
+        }
+
+        .orbital-shell:hover .orbital-option {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .orbital-shell:hover .orbital-option-contents {
+            transform: scale(1);
+        }
+
+        @media (min-width: 640px) {
+            .orbital-center {
+                width: 150px;
+                height: 150px;
+            }
+
+            .orbital-option {
+                width: 140px;
+                height: 140px;
+            }
+
+            .orbital-option {
+                --radius-current: var(--radius-sm, 190px);
+            }
+        }
+
+        .orbital-option {
+            --radius-current: var(--radius, 140px);
+        }
+
+        dialog::backdrop {
+            background: rgba(12, 28, 21, 0.35);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes orbit {
+            from {
+                transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--radius-current, 140px));
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(calc(360deg + var(--angle))) translateX(var(--radius-current, 140px));
+            }
+        }
+
+        @keyframes orbit-pulse {
+            0%, 100% {
+                --orbit-pulse: -18px;
+            }
+            50% {
+                --orbit-pulse: 18px;
+            }
+        }
+
+        @keyframes counter-orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes dock-pulse {
+            0% {
+                transform: scale(1);
+            }
+            35% {
+                transform: scale(1.08);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .fireflies {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .firefly {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(107, 142, 107, 0.35);
+            opacity: 0;
+            animation: drift 14s ease-in-out infinite;
+        }
+
+        .dark .firefly {
+            background: #D1E8D1;
+            box-shadow: 0 0 12px rgba(209, 232, 209, 0.8);
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate3d(0, 0, 0) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            50% {
+                transform: translate3d(20px, -30px, 0) scale(1);
+                opacity: 0.9;
+            }
+            80% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate3d(-10px, 20px, 0) scale(0.9);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col font-sans overflow-hidden selection:bg-forest-moss selection:text-white">
+    <div class="fireflies" id="fireflies"></div>
+    <div class="custom-cursor-dot" id="cursor-dot"></div>
+    <div class="custom-cursor-ring" id="cursor-ring"></div>
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <!-- Grain Texture -->
+        <div class="absolute inset-0 bg-grain opacity-10 z-20 mix-blend-overlay"></div>
+        
+        <!-- Deep Atmospheric Glows -->
+        <div class="absolute top-[-20%] left-[20%] w-[800px] h-[800px] bg-forest-moss/10 rounded-full blur-[120px] animate-sway-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-forest-timber/5 rounded-full blur-[100px] animate-sway-slow" style="animation-delay: -5s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 w-full max-w-[1400px] mx-auto p-6 md:p-8 h-full flex flex-col">
+        
+        <!-- TOP NAVIGATION BAR (Updated: No Hamburger, All Links Visible) -->
+        <nav class="w-full flex flex-col md:flex-row justify-between items-center py-4 mb-8 border-b border-forest-moss/10 gap-6 md:gap-0">
+            <!-- Left: Brand + Theme Toggle -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="group p-2 rounded-full hover:bg-forest-moss/10 transition-colors" title="Toggle Light/Dark Mode">
+                    <img src="icon-transparent.png" alt="Toggle theme" class="w-12 h-12 object-contain group-hover:rotate-6 transition-transform duration-500" />
+                </button>
+                <button onclick="renderContent('home')" class="font-serif text-lg tracking-[0.2em] uppercase text-forest-mist hover:text-forest-moss transition-colors">
+                    McTiernan
+                </button>
+            </div>
+
+            <!-- Center: Navigation Links (Always Visible) -->
+            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-14 font-mono text-sm md:text-base tracking-[0.18em] text-forest-stone uppercase">
+                <button onclick="renderContent('home')" id="nav-home" class="nav-btn hover:text-forest-mist transition-colors">Home</button>
+                <button onclick="renderContent('projects')" id="nav-projects" class="nav-btn hover:text-forest-mist transition-colors">Woodwork</button>
+                <button onclick="renderContent('restorations')" id="nav-restorations" class="nav-btn hover:text-forest-mist transition-colors">Restorations</button>
+                <button onclick="renderContent('music')" id="nav-music" class="nav-btn hover:text-forest-mist transition-colors">Music</button>
+                <button onclick="renderContent('digital')" id="nav-digital" class="nav-btn hover:text-forest-mist transition-colors">Digital</button>
+                <button onclick="renderContent('photography')" id="nav-photography" class="nav-btn hover:text-forest-mist transition-colors">Photography</button>
+            </div>
+
+            <!-- Right: Bond Switches -->
+            <div class="bond-switches">
+                <div class="flex flex-col items-center gap-1">
+                    <label class="bond-switch" title="Keep orbit open">
+                        <input id="switch-orbit" type="checkbox" />
+                        <span class="bond-lever"></span>
+                    </label>
+                    <span class="bond-label">Orbit</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <label class="bond-switch" title="Spin faster">
+                        <input id="switch-spin" type="checkbox" />
+                        <span class="bond-lever"></span>
+                    </label>
+                    <span class="bond-label">Spin</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <label class="bond-switch" title="Dark mode">
+                        <input id="switch-dark" type="checkbox" />
+                        <span class="bond-lever"></span>
+                    </label>
+                    <span class="bond-label">Dark</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT AREA -->
+        <main id="main-content" class="flex-1 h-full overflow-y-auto hide-scroll pb-8">
+            <!-- Content injected via JS -->
+        </main>
+        <footer class="text-xs font-mono text-forest-stone">
+            <div class="flex items-center justify-between border-t border-forest-moss/10 pt-4">
+                <div class="flex flex-col gap-2">
+                    <span>¸ <span id="year"></span> Mc Tiernan</span>
+                </div>
+                <div id="footer-actions" class="flex items-center gap-4">
+                    <a id="media-kit" href="McTiernan Logo Pack.zip" class="uppercase tracking-widest hover:text-forest-mist transition-colors" download>Media Kit</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <dialog id="project-modal" class="bg-forest-surface/90 text-forest-mist rounded-sm p-0 max-w-3xl w-[90vw] overflow-hidden">
+        <div class="p-8 space-y-6" id="project-modal-content">
+            <!-- Content injected by JS -->
+        </div>
+    </dialog>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        /* --- DATA --- */
+        const DATA = {
+            profile: {
+                name: "McTiernan",
+                role: "Systems Architect",
+                status: "Available for Consulting",
+                location: "Stockholm, Sweden",
+                tagline: "Designing with<br><span class='text-forest-moss italic'>Calm Precision</span>.",
+                bio: "I build resilient digital systems with clear structure and quiet focus."
+            },
+            work: [
+                { id: 1, role: "Principal Architect", company: "Nordic Systems", year: "2021â€Present", desc: "Leading infrastructure sustainability and scale for renewable energy data.", tech: "Rust, K8s" },
+                { id: 2, role: "Product Ops Lead", company: "Nexus", year: "2018â€2021", desc: "Harmonizing engineering velocity with business peace.", tech: "Python, Go" },
+                { id: 3, role: "Strategist", company: "Freelance", year: "2016â€2018", desc: "Automation and clarity for SMEs.", tech: "Node, React" }
+            ],
+            // Added more projects
+            projects: [
+                {
+                    id: 1,
+                    title: "The Quiet Loft",
+                    cat: "Interior",
+                    img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop",
+                    desc: "A tactile interior study in natural materials and quiet function."
+                },
+                {
+                    id: 2,
+                    title: "Flora Index",
+                    cat: "Archive",
+                    img: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=2527&auto=format&fit=crop",
+                    desc: "A compact index for browsing and preserving local flora."
+                },
+                {
+                    id: 3,
+                    title: "Volcanic Ash",
+                    cat: "Photography",
+                    img: "https://images.unsplash.com/photo-1464695110811-dcf3903dc2f4?q=80&w=2574&auto=format&fit=crop",
+                    desc: "A study in contrast and landscape texture."
+                },
+                {
+                    id: 4,
+                    title: "Nordic Light",
+                    cat: "Study",
+                    img: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2670&auto=format&fit=crop",
+                    desc: "Long light cycles and reflective northern tones."
+                }
+            ],
+            photography: {
+                bw: [
+                    { id: 1, title: "Volcanic Ash", img: "https://images.unsplash.com/photo-1464695110811-dcf3903dc2f4?q=80&w=2574&auto=format&fit=crop" },
+                    { id: 2, title: "Nordic Light", img: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2670&auto=format&fit=crop" }
+                ],
+                color: [
+                    { id: 1, title: "The Quiet Loft", img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop" },
+                    { id: 2, title: "Flora Index", img: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=2527&auto=format&fit=crop" }
+                ]
+            },
+            restorations: [],
+            music: [
+                {
+                    id: 1,
+                    title: "Experiment",
+                    url: "https://soundcloud.com/mackmctiernan/experiment"
+                },
+                {
+                    id: 2,
+                    title: "Sixteen Tons (Tennessee Ernie Ford)",
+                    url: "https://soundcloud.com/mackmctiernan/sixteen-tons-tennessee-ernie-ford"
+                },
+                {
+                    id: 3,
+                    title: "Blue Is The Eye (Ye Vagabonds)",
+                    url: "https://soundcloud.com/mackmctiernan/blue-is-the-eye-ye-vagabonds"
+                },
+                {
+                    id: 4,
+                    title: "Tangerine Puppet (Donovan)",
+                    url: "https://soundcloud.com/mackmctiernan/tangerine-puppet-donovan"
+                },
+                {
+                    id: 5,
+                    title: "Workin' At The Car Wash Blues (Jim Croce)",
+                    url: "https://soundcloud.com/mackmctiernan/workin-at-the-car-wash-blues-jim-croce"
+                },
+                {
+                    id: 6,
+                    title: "The Final Boss",
+                    url: "https://soundcloud.com/mackmctiernan/the-final-boss"
+                },
+                {
+                    id: 7,
+                    title: "Guaranteed (Cover) (Eddie Vedder)",
+                    url: "https://soundcloud.com/mackmctiernan/guaranteed-cover-eddie-vedder"
+                },
+                {
+                    id: 8,
+                    title: "Don't Think Twice, It's Alright",
+                    url: "https://soundcloud.com/mackmctiernan/dont-think-twice-its-alright-eoin-mc-tiernan"
+                }
+            ],
+            digital: []
+        };
+
+        /* --- LOGIC --- */
+        let orbitRate = 1;
+        let orbitTweenId = null;
+        
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) {
+                return "Good Morning";
+            }
+            if (hour < 18) {
+                return "Good Afternoon";
+            }
+            return "Good Evening";
+        }
+
+        function openProject(id) {
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('project-modal-content');
+            const project = DATA.projects.find(item => item.id === id);
+            if (!project) {
+                return;
+            }
+
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="w-full max-h-[80vh] flex items-center justify-center bg-forest-surface">
+                        <img src="${project.img}" alt="${project.title}" class="max-h-[80vh] w-auto object-contain" />
+                    </div>
+                    <div class="space-y-3">
+                        <p class="font-mono text-xs uppercase tracking-widest text-forest-moss">${project.cat}</p>
+                        <h2 class="text-3xl md:text-4xl font-serif">${project.title}</h2>
+                        <p class="text-forest-stone text-base leading-relaxed">${project.desc || 'Details coming soon.'}</p>
+                    </div>
+                </div>
+            `;
+
+            modal.showModal();
+        }
+
+        function openImage(encodedTitle, encodedImg) {
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('project-modal-content');
+            if (!modal || !content) {
+                return;
+            }
+
+            const title = decodeURIComponent(encodedTitle || '');
+            const img = decodeURIComponent(encodedImg || '');
+
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="w-full max-h-[80vh] flex items-center justify-center bg-forest-surface">
+                        <img src="${img}" alt="${title}" class="max-h-[80vh] w-auto object-contain" />
+                    </div>
+                </div>
+            `;
+
+            modal.showModal();
+        }
+
+        async function loadMedia() {
+            try {
+                const response = await fetch('assets/media.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    return;
+                }
+
+                const media = await response.json();
+                if (Array.isArray(media.woodwork) && media.woodwork.length > 0) {
+                    DATA.projects = media.woodwork;
+                }
+                if (media.photography?.bw) {
+                    DATA.photography.bw = media.photography.bw;
+                }
+                if (media.photography?.color) {
+                    DATA.photography.color = media.photography.color;
+                }
+                if (Array.isArray(media.restorations)) {
+                    DATA.restorations = media.restorations;
+                }
+            } catch (error) {
+                // Optional media manifest, ignore failures.
+            }
+        }
+
+        function initCustomCursor() {
+            const dot = document.getElementById('cursor-dot');
+            const ring = document.getElementById('cursor-ring');
+
+            if (!dot || !ring) {
+                return;
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                dot.style.left = `${e.clientX}px`;
+                dot.style.top = `${e.clientY}px`;
+                ring.animate(
+                    { left: `${e.clientX}px`, top: `${e.clientY}px` },
+                    { duration: 300, fill: "forwards" }
+                );
+            });
+
+            const hoverTargets = document.querySelectorAll('a, button, .hover-trigger');
+            hoverTargets.forEach(el => {
+                el.addEventListener('mouseenter', () => ring.classList.add('is-hover'));
+                el.addEventListener('mouseleave', () => ring.classList.remove('is-hover'));
+            });
+        }
+
+        function initModalBackdropClose() {
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('project-modal-content');
+
+            if (!modal || !content) {
+                return;
+            }
+
+            modal.addEventListener('click', (event) => {
+                const rect = content.getBoundingClientRect();
+                const isInDialog = event.clientX >= rect.left &&
+                    event.clientX <= rect.right &&
+                    event.clientY >= rect.top &&
+                    event.clientY <= rect.bottom;
+
+                if (!isInDialog) {
+                    modal.close();
+                }
+            });
+        }
+
+        function initFireflies() {
+            const container = document.getElementById('fireflies');
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = '';
+            const total = 20;
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'firefly';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 12}s`;
+                dot.style.animationDuration = `${12 + Math.random() * 10}s`;
+                container.appendChild(dot);
+            }
+        }
+
+        function initRunawayContact() {
+            const existing = document.getElementById('runaway-contact');
+            if (!existing) {
+                return;
+            }
+
+            const button = existing;
+            const safePadding = 140;
+            const snapPoints = [
+                { x: 0.3, y: 0.25 },
+                { x: 0.7, y: 0.25 },
+                { x: 0.32, y: 0.6 },
+                { x: 0.68, y: 0.6 },
+                { x: 0.5, y: 0.4 },
+                { x: 0.5, y: 0.7 }
+            ];
+
+            function clamp(value, min, max) {
+                return Math.max(min, Math.min(max, value));
+            }
+
+            function placeButton(point) {
+                const rect = button.getBoundingClientRect();
+                const maxX = window.innerWidth - rect.width - safePadding;
+                const maxY = window.innerHeight - rect.height - safePadding;
+                const targetX = clamp(point.x * window.innerWidth, safePadding, maxX);
+                const targetY = clamp(point.y * window.innerHeight, safePadding, maxY);
+                button.style.left = `${targetX}px`;
+                button.style.top = `${targetY}px`;
+            }
+
+            let attemptCount = 0;
+            let isCatchable = false;
+
+            function hop() {
+                const point = snapPoints[Math.floor(Math.random() * snapPoints.length)];
+                placeButton(point);
+            }
+
+            function settle() {
+                const footerActions = document.getElementById('footer-actions');
+                if (!footerActions) {
+                    placeButton({ x: 0.82, y: 0.2 });
+                    return;
+                }
+                button.classList.add('is-docked');
+                button.style.left = '';
+                button.style.top = '';
+                footerActions.insertBefore(button, footerActions.firstChild);
+            }
+
+            placeButton({ x: 0.75, y: 0.58 });
+
+            document.addEventListener('mousemove', (event) => {
+                const rect = button.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const dx = event.clientX - centerX;
+                const dy = event.clientY - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 120 && !isCatchable) {
+                    attemptCount += 1;
+                    if (attemptCount >= 50) {
+                        isCatchable = true;
+                        button.classList.add('is-caught');
+                        settle();
+                        return;
+                    }
+                    hop();
+                }
+            });
+
+            button.addEventListener('click', (event) => {
+                if (!isCatchable) {
+                    event.preventDefault();
+                    attemptCount += 1;
+                    if (attemptCount >= 50) {
+                        isCatchable = true;
+                        button.classList.add('is-caught');
+                        settle();
+                        return;
+                    }
+                    hop();
+                } else {
+                    if (!document.documentElement.classList.contains('dark')) {
+                        toggleTheme();
+                    }
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                hop();
+            });
+        }
+
+        // Initialize Tilt Animation for Cards
+        function initTilt() {
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -5; // Max 5deg tilt
+                    const rotateY = ((x - centerX) / centerX) * 5;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+
+        function applyOrbitRate(rate) {
+            orbitRate = rate;
+            const animatedNodes = document.querySelectorAll('.orbital-option, .orbital-option-inner');
+            const animations = [];
+            animatedNodes.forEach(node => {
+                animations.push(...node.getAnimations());
+            });
+            animations.forEach(anim => {
+                anim.playbackRate = rate;
+            });
+        }
+
+        function smoothOrbitRate(targetRate) {
+            const startRate = orbitRate;
+            const duration = 600;
+            const start = performance.now();
+
+            if (orbitTweenId) {
+                cancelAnimationFrame(orbitTweenId);
+            }
+
+            function tick(now) {
+                const elapsed = now - start;
+                const t = Math.min(elapsed / duration, 1);
+                const eased = t * (2 - t);
+                const rate = startRate + (targetRate - startRate) * eased;
+                applyOrbitRate(rate);
+                if (t < 1) {
+                    orbitTweenId = requestAnimationFrame(tick);
+                }
+            }
+
+            orbitTweenId = requestAnimationFrame(tick);
+        }
+
+        const WOODWORK_MOSAIC = [
+            'col-span-6 row-span-3',
+            'col-span-3 row-span-2',
+            'col-span-3 row-span-2',
+            'col-span-4 row-span-3',
+            'col-span-2 row-span-2',
+            'col-span-2 row-span-2'
+        ];
+
+        function initBondSwitches() {
+            const orbitSwitch = document.getElementById('switch-orbit');
+            const spinSwitch = document.getElementById('switch-spin');
+            const darkSwitch = document.getElementById('switch-dark');
+
+            if (!orbitSwitch || !spinSwitch || !darkSwitch) {
+                return;
+            }
+
+            const root = document.documentElement;
+
+            orbitSwitch.addEventListener('change', () => {
+                if (orbitSwitch.checked) {
+                    document.body.classList.add('orbit-pinned');
+                } else {
+                    document.body.classList.remove('orbit-pinned');
+                }
+            });
+
+            spinSwitch.addEventListener('change', () => {
+                smoothOrbitRate(spinSwitch.checked ? 4.5 : 1);
+            });
+
+            darkSwitch.addEventListener('change', () => {
+                if (darkSwitch.checked) {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+            });
+        }
+
+        function renderContent(view) {
+            const container = document.getElementById('main-content');
+            
+            // Active Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-forest-mist');
+                btn.classList.add('text-forest-stone');
+            });
+            const navId = view.startsWith('photography') ? 'photography' : view;
+            const activeBtn = document.getElementById(`nav-${navId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active', 'text-forest-mist');
+                activeBtn.classList.remove('text-forest-stone');
+            }
+
+            let html = '';
+
+            // --- HOME VIEW ---
+            if (view === 'home') {
+                html = `
+                    <div class="animate-fade-in max-w-6xl mx-auto pt-6 md:pt-16 min-h-[70vh] relative flex flex-col items-center justify-center">
+                        <div class="md:hidden text-center mb-6">
+                            <p class="text-3xl font-serif text-forest-mist">Welcome</p>
+                            <p class="text-sm text-forest-stone">Project Documentation</p>
+                        </div>
+                        <div class="absolute left-0 top-0 text-left max-w-xs space-y-3 hidden md:block">
+                            <p class="text-4xl md:text-5xl font-serif text-forest-mist">Welcome</p>
+                            <p class="text-sm md:text-base text-forest-stone">Project Documentation</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="orbital-shell group w-72 h-72 sm:w-96 sm:h-96 mx-auto">
+                                <div class="absolute inset-0 rounded-full border border-forest-moss/30 bg-white backdrop-blur-sm transition-all duration-500 group-hover:scale-90 group-hover:bg-forest-base/90 group-hover:border-forest-moss/50"></div>
+                                <div class="orbital-ring"></div>
+                                <div class="orbital-ring inner"></div>
+                                <div class="orbital-center">
+                                    <img src="icon-transparent.png" alt="Mc Tiernan" class="w-16 h-16 sm:w-20 sm:h-20 object-contain opacity-90" />
+                                </div>
+
+                                ${[
+                                    { id: 'projects', label: 'Woodwork', angle: '-20deg', radius: '250px', radiusSm: '330px', delay: '0ms' },
+                                    { id: 'restorations', label: 'Restorations', angle: '52deg', radius: '250px', radiusSm: '330px', delay: '120ms' },
+                                    { id: 'music', label: 'Music', angle: '124deg', radius: '250px', radiusSm: '330px', delay: '240ms' },
+                                    { id: 'digital', label: 'Digital', angle: '196deg', radius: '250px', radiusSm: '330px', delay: '360ms' },
+                                    { id: 'photography', label: 'Photography', angle: '268deg', radius: '250px', radiusSm: '330px', delay: '480ms' }
+                                ].map(item => `
+                                    <button onclick="renderContent('${item.id}')" class="orbital-option hover-trigger" style="--angle: ${item.angle}; --radius: ${item.radius}; --radius-sm: ${item.radiusSm}; --delay: ${item.delay};">
+                                        <span class="orbital-glow"></span>
+                                        <span class="orbital-option-inner">
+                                            <span class="orbital-option-contents">
+                                                <span class="orbital-label">${item.label}</span>
+                                            </span>
+                                        </span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <a id="runaway-contact" class="runaway-contact hover-trigger" href="mailto:hello@mctiernan.com">Contact</a>
+
+                    </div>
+                `;
+            }
+
+            // --- PROFESSIONAL ---
+            else if (view === 'professional') {
+                html = `
+                    <div class="animate-fade-in max-w-3xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-16 border-b border-forest-moss/10 pb-8">
+                            <h2 class="text-4xl md:text-5xl font-serif mb-4 text-forest-mist">The Path</h2>
+                            <p class="text-forest-stone text-lg font-light">A concise view of leadership and delivery.</p>
+                        </header>
+
+                        <div class="relative border-l border-forest-moss/10 ml-3 space-y-16">
+                            ${DATA.work.map((job) => `
+                                <div class="pl-12 relative group">
+                                    <!-- Dot -->
+                                    <div class="absolute -left-[5px] top-2.5 w-2.5 h-2.5 rounded-full bg-forest-base border border-forest-moss group-hover:bg-forest-moss transition-colors"></div>
+                                    
+                                    <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+                                        <h3 class="text-2xl font-serif text-forest-mist group-hover:text-forest-timber transition-colors">${job.role}</h3>
+                                        <span class="font-mono text-xs text-forest-stone">${job.year}</span>
+                                    </div>
+                                    <div class="text-forest-moss italic mb-4 font-serif">${job.company}</div>
+                                    <p class="text-forest-stone leading-relaxed font-light mb-4">${job.desc}</p>
+                                    <div class="flex gap-3">
+                                        ${job.tech.split(', ').map(t => `<span class="text-xs border border-forest-stone/20 px-2 py-1 rounded text-forest-stone/70">${t}</span>`).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- PROJECTS ---
+            else if (view === 'projects') {
+                html = `
+                     <div class="animate-fade-in max-w-6xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-16 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-forest-moss/10 pb-8">
+                            <div>
+                                <h2 class="text-4xl md:text-5xl font-serif mb-4 text-forest-mist">Woodwork</h2>
+                                <p class="text-forest-stone text-lg font-light">Furniture, objects, and material studies.</p>
+                            </div>
+                        </header>
+
+                        <div class="grid grid-cols-6 auto-rows-[90px] md:auto-rows-[120px] gap-4">
+                            ${DATA.projects.map((p, i) => {
+                                const span = WOODWORK_MOSAIC[i % WOODWORK_MOSAIC.length];
+                                return `
+                                    <button onclick="openProject(${p.id})" class="group ${span} relative overflow-hidden bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
+                                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                            style="background-image: url('${p.img}');">
+                                        </div>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-forest-base/90 via-forest-base/10 to-transparent"></div>
+                                        <div class="absolute bottom-0 left-0 p-4">
+                                            <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                     </div>
+                `;
+            }
+            // --- RESTORATIONS ---
+            else if (view === 'restorations') {
+                html = `
+                    <div class="animate-fade-in max-w-6xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6">
+                            <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Restorations</h2>
+                            <p class="text-forest-stone text-lg font-light">Focused repairs and patient rebuilds.</p>
+                        </header>
+                        ${DATA.restorations.length > 0 ? `
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                ${DATA.restorations.map((item, i) => `
+                                    <button onclick="openImage('${encodeURIComponent(item.title)}','${encodeURIComponent(item.img)}')" class="group relative overflow-hidden aspect-square bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
+                                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                            style="background-image: url('${item.img}');">
+                                        </div>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-forest-base/80 via-transparent to-transparent"></div>
+                                        <div class="absolute bottom-0 left-0 p-4">
+                                            <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
+                                        </div>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="glass-forest p-8 text-forest-stone text-sm">
+                                Add restoration images to assets/restorations.
+                            </div>
+                        `}
+                    </div>
+                `;
+            }
+
+            // --- MUSIC ---
+            else if (view === 'music') {
+                html = `
+                    <div class="animate-fade-in max-w-5xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6">
+                            <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Music</h2>
+                            <p class="text-forest-stone text-lg font-light">Covers and originals, all in one place.</p>
+                        </header>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${DATA.music.map((track) => `
+                                <div class="glass-forest p-4 md:p-5 space-y-3">
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">${track.title}</p>
+                                    <div class="relative aspect-square overflow-hidden bg-forest-surface">
+                                        <iframe
+                                            class="absolute inset-0 w-full h-full"
+                                            scrolling="no"
+                                            frameborder="no"
+                                            allow="autoplay"
+                                            src="https://w.soundcloud.com/player/?url=${encodeURIComponent(track.url)}&color=%236B8E6B&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&show_playcount=false&visual=true">
+                                        </iframe>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- DIGITAL ---
+            else if (view === 'digital') {
+                html = `
+                    <div class="animate-fade-in max-w-4xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6">
+                            <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Digital</h2>
+                            <p class="text-forest-stone text-lg font-light">Interfaces, tools, and experiments.</p>
+                        </header>
+                        ${DATA.digital.length > 0 ? `
+                            <div class="space-y-4">
+                                ${DATA.digital.map((item) => `
+                                    <div class="glass-forest p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                        <div>
+                                            <p class="text-sm uppercase tracking-[0.2em] text-forest-moss font-mono">${item.label || 'Project'}</p>
+                                            <h3 class="text-2xl font-serif text-forest-mist mt-2">${item.title}</h3>
+                                            ${item.desc ? `<p class="text-forest-stone text-sm mt-2">${item.desc}</p>` : ''}
+                                            ${item.stack ? `<p class="text-xs text-forest-stone mt-3">Stack: ${item.stack}</p>` : ''}
+                                        </div>
+                                        ${item.url ? `
+                                            <a href="${item.url}" class="text-xs font-mono uppercase tracking-widest text-forest-moss hover:text-forest-mist transition-colors" target="_blank" rel="noreferrer">Open</a>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="glass-forest p-8 text-forest-stone text-sm">
+                                Add digital projects to the DATA.digital list.
+                            </div>
+                        `}
+                    </div>
+                `;
+            }
+
+            // --- PHOTOGRAPHY ---
+            else if (view === 'photography') {
+                html = `
+                    <div class="animate-fade-in max-w-6xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6">
+                            <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Photography</h2>
+                            <p class="text-forest-stone text-lg font-light">Film scenes from the Olympus OM10.</p>
+                        </header>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${[
+                                { id: 'photography-bw', label: 'Black and White', cover: DATA.photography.bw[0]?.img },
+                                { id: 'photography-colour', label: 'Colour', cover: DATA.photography.color[0]?.img }
+                            ].map(folder => `
+                                <button onclick="renderContent('${folder.id}')" class="group glass-forest p-0 text-left hover-trigger transition-colors overflow-hidden">
+                                    <div class="relative aspect-[3/2] w-full bg-forest-surface">
+                                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                            style="background-image: url('${folder.cover || ''}');">
+                                        </div>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-forest-base/90 via-forest-base/10 to-transparent"></div>
+                                    </div>
+                                    <div class="p-6">
+                                        <h3 class="text-2xl font-serif text-forest-mist mt-3">${folder.label}</h3>
+                                        <p class="text-forest-stone text-sm mt-2">Open the ${folder.label.toLowerCase()} set</p>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- PHOTOGRAPHY: BLACK AND WHITE ---
+            else if (view === 'photography-bw') {
+                html = `
+                    <div class="animate-fade-in max-w-6xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                            <div>
+                                <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Black and White</h2>
+                                <p class="text-forest-stone text-lg font-light">Quiet contrast and grain.</p>
+                            </div>
+                            <button onclick="renderContent('photography')" class="text-xs font-mono uppercase tracking-widest text-forest-moss hover:text-forest-mist transition-colors">Back to folders</button>
+                        </header>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                            ${DATA.photography.bw.map((p, i) => `
+                                <button onclick="openImage('${encodeURIComponent(p.title)}','${encodeURIComponent(p.img)}')" class="group relative overflow-hidden aspect-square bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 grayscale"
+                                        style="background-image: url('${p.img}');">
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-forest-base/80 via-transparent to-transparent"></div>
+                                    <div class="absolute bottom-0 left-0 p-4">
+                                        <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- PHOTOGRAPHY: COLOUR ---
+            else if (view === 'photography-colour') {
+                html = `
+                    <div class="animate-fade-in max-w-6xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-12 border-b border-forest-moss/10 pb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                            <div>
+                                <h2 class="text-4xl md:text-5xl font-serif mb-3 text-forest-mist">Colour</h2>
+                                <p class="text-forest-stone text-lg font-light">Warm tones and balanced grain.</p>
+                            </div>
+                            <button onclick="renderContent('photography')" class="text-xs font-mono uppercase tracking-widest text-forest-moss hover:text-forest-mist transition-colors">Back to folders</button>
+                        </header>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                            ${DATA.photography.color.map((p, i) => `
+                                <button onclick="openImage('${encodeURIComponent(p.title)}','${encodeURIComponent(p.img)}')" class="group relative overflow-hidden aspect-square bg-forest-surface shadow-lg tilt-card hover-trigger text-left">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                        style="background-image: url('${p.img}');">
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-forest-base/80 via-transparent to-transparent"></div>
+                                    <div class="absolute bottom-0 left-0 p-4">
+                                        <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- INNOVATION ---
+            else if (view === 'innovation') {
+                 html = `
+                    <div class="animate-fade-in max-w-4xl mx-auto pt-8 md:pt-12">
+                        <header class="mb-16 text-center">
+                            <i data-lucide="sprout" class="w-12 h-12 text-forest-moss mx-auto mb-6 opacity-80"></i>
+                            <h2 class="text-4xl md:text-5xl font-serif mb-6 text-forest-mist">The Greenhouse</h2>
+                            <p class="text-forest-stone text-lg font-light max-w-xl mx-auto">
+                                Early experiments and prototypes in progress.
+                            </p>
+                        </header>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <!-- Card 1 -->
+                            <div class="glass-forest p-8 rounded-sm hover:translate-y-[-4px] transition-transform duration-500 tilt-card">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="font-mono text-xs text-forest-moss border border-forest-moss/20 px-2 py-1 rounded">ACTIVE</span>
+                                    <i data-lucide="brain-circuit" class="w-6 h-6 text-forest-stone"></i>
+                                </div>
+                                <h3 class="text-2xl font-serif text-forest-mist mb-4">Semantic Search</h3>
+                                <p class="text-forest-stone font-light text-sm leading-relaxed mb-8">
+                                    Private semantic search for offline documents.
+                                </p>
+                                <div class="w-full h-1 bg-forest-moss/10 rounded-full overflow-hidden">
+                                    <div class="w-2/3 h-full bg-forest-moss/50"></div>
+                                </div>
+                                <div class="mt-2 text-right text-xs font-mono text-forest-stone">65% Complete</div>
+                            </div>
+
+                             <!-- Card 2 -->
+                            <div class="glass-forest p-8 rounded-sm hover:translate-y-[-4px] transition-transform duration-500 tilt-card">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="font-mono text-xs text-forest-timber border border-forest-timber/20 px-2 py-1 rounded">DORMANT</span>
+                                    <i data-lucide="calendar-clock" class="w-6 h-6 text-forest-stone"></i>
+                                </div>
+                                <h3 class="text-2xl font-serif text-forest-mist mb-4">Calendar Agent</h3>
+                                <p class="text-forest-stone font-light text-sm leading-relaxed mb-8">
+                                    Automated scheduling to reduce back-and-forth.
+                                </p>
+                                <div class="w-full h-1 bg-forest-moss/10 rounded-full overflow-hidden">
+                                    <div class="w-1/4 h-full bg-forest-timber/50"></div>
+                                </div>
+                                <div class="mt-2 text-right text-xs font-mono text-forest-stone">25% Complete</div>
+                            </div>
+                        </div>
+                    </div>
+                 `;
+            }
+
+            container.innerHTML = html;
+            lucide.createIcons();
+            
+            // Re-initialize tilt for new elements
+            initTilt();
+            initCustomCursor();
+            if (view === 'home') {
+                initRunawayContact();
+                applyOrbitRate(orbitRate);
+            }
+        }
+
+        /* --- INIT --- */
+        window.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('year').innerText = new Date().getFullYear();
+            await loadMedia();
+            renderContent('home');
+            initModalBackdropClose();
+            initCustomCursor();
+            initFireflies();
+            initBondSwitches();
+        });
+
+    </script>
+</body>
+</html>

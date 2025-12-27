@@ -1,0 +1,313 @@
+{
+  "woodwork": [
+    {
+      "id": 1,
+      "title": "Swinging Garden Bench",
+      "img": "assets/woodwork/Swinging Garden Bench.jpg",
+      "cat": "Woodwork",
+      "desc": null
+    },
+    {
+      "id": 2,
+      "title": "Bird Table",
+      "img": "assets/woodwork/Bird Table.jpg",
+      "cat": "Woodwork",
+      "desc": null
+    },
+    {
+      "id": 3,
+      "title": "Coffee Table",
+      "img": "assets/woodwork/Coffee Table.jpeg",
+      "cat": "Woodwork",
+      "desc": null
+    },
+    {
+      "id": 4,
+      "title": "Repurposed Bedframe Bench",
+      "img": "assets/woodwork/Repurposed Bedframe Bench.jpg",
+      "cat": "Woodwork",
+      "desc": null
+    }
+  ],
+  "photography": {
+    "bw": [
+      {
+        "id": 1,
+        "title": "000008",
+        "img": "assets/photography/bw/000008.JPG"
+      },
+      {
+        "id": 2,
+        "title": "000013",
+        "img": "assets/photography/bw/000013.JPG"
+      },
+      {
+        "id": 3,
+        "title": "000016",
+        "img": "assets/photography/bw/000016.JPG"
+      },
+      {
+        "id": 4,
+        "title": "000037",
+        "img": "assets/photography/bw/000037.JPG"
+      },
+      {
+        "id": 5,
+        "title": "000038",
+        "img": "assets/photography/bw/000038.JPG"
+      }
+    ],
+    "color": [
+      {
+        "id": 1,
+        "title": "000010",
+        "img": "assets/photography/colour/000010.JPG"
+      },
+      {
+        "id": 2,
+        "title": "000013",
+        "img": "assets/photography/colour/000013.JPG"
+      },
+      {
+        "id": 3,
+        "title": "000019",
+        "img": "assets/photography/colour/000019.JPG"
+      },
+      {
+        "id": 4,
+        "title": "000021",
+        "img": "assets/photography/colour/000021.JPG"
+      },
+      {
+        "id": 5,
+        "title": "000023",
+        "img": "assets/photography/colour/000023.JPG"
+      },
+      {
+        "id": 6,
+        "title": "000028",
+        "img": "assets/photography/colour/000028.JPG"
+      },
+      {
+        "id": 7,
+        "title": "000031",
+        "img": "assets/photography/colour/000031.JPG"
+      },
+      {
+        "id": 8,
+        "title": "000038",
+        "img": "assets/photography/colour/000038.JPG"
+      },
+      {
+        "id": 9,
+        "title": "12",
+        "img": "assets/photography/colour/12.jpg"
+      },
+      {
+        "id": 10,
+        "title": "15",
+        "img": "assets/photography/colour/15.jpg"
+      },
+      {
+        "id": 11,
+        "title": "17",
+        "img": "assets/photography/colour/17.jpg"
+      },
+      {
+        "id": 12,
+        "title": "24",
+        "img": "assets/photography/colour/24.jpg"
+      },
+      {
+        "id": 13,
+        "title": "29",
+        "img": "assets/photography/colour/29.jpg"
+      },
+      {
+        "id": 14,
+        "title": "31",
+        "img": "assets/photography/colour/31.jpg"
+      },
+      {
+        "id": 15,
+        "title": "36",
+        "img": "assets/photography/colour/36.jpg"
+      },
+      {
+        "id": 16,
+        "title": "Photo10 8A",
+        "img": "assets/photography/colour/Photo10_8A.jpg"
+      },
+      {
+        "id": 17,
+        "title": "Photo11 9A",
+        "img": "assets/photography/colour/Photo11_9A.jpg"
+      },
+      {
+        "id": 18,
+        "title": "Photo12 10A",
+        "img": "assets/photography/colour/Photo12_10A.jpg"
+      }
+    ]
+  },
+  "restorations": [
+    {
+      "id": 1,
+      "title": "Mandolin",
+      "img": "assets/restorations/Mandolin.jpg"
+    }
+  ],
+  "recent": [
+    {
+      "title": "Mandolin",
+      "img": "assets/restorations/Mandolin.jpg",
+      "category": "Restoration"
+    },
+    {
+      "title": "Photo12 10A",
+      "img": "assets/photography/colour/Photo12_10A.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "Photo11 9A",
+      "img": "assets/photography/colour/Photo11_9A.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "Photo10 8A",
+      "img": "assets/photography/colour/Photo10_8A.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "Repurposed Bedframe Bench",
+      "img": "assets/woodwork/Repurposed Bedframe Bench.jpg",
+      "category": "Woodwork"
+    },
+    {
+      "title": "Bird Table",
+      "img": "assets/woodwork/Bird Table.jpg",
+      "category": "Woodwork"
+    },
+    {
+      "title": "Coffee Table",
+      "img": "assets/woodwork/Coffee Table.jpeg",
+      "category": "Woodwork"
+    },
+    {
+      "title": "Swinging Garden Bench",
+      "img": "assets/woodwork/Swinging Garden Bench.jpg",
+      "category": "Woodwork"
+    },
+    {
+      "title": "000016",
+      "img": "assets/photography/bw/000016.JPG",
+      "category": "Photography BW"
+    },
+    {
+      "title": "000038",
+      "img": "assets/photography/bw/000038.JPG",
+      "category": "Photography BW"
+    },
+    {
+      "title": "000013",
+      "img": "assets/photography/bw/000013.JPG",
+      "category": "Photography BW"
+    },
+    {
+      "title": "000037",
+      "img": "assets/photography/bw/000037.JPG",
+      "category": "Photography BW"
+    },
+    {
+      "title": "000008",
+      "img": "assets/photography/bw/000008.JPG",
+      "category": "Photography BW"
+    },
+    {
+      "title": "000028",
+      "img": "assets/photography/colour/000028.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000019",
+      "img": "assets/photography/colour/000019.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000010",
+      "img": "assets/photography/colour/000010.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000038",
+      "img": "assets/photography/colour/000038.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000031",
+      "img": "assets/photography/colour/000031.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000023",
+      "img": "assets/photography/colour/000023.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000021",
+      "img": "assets/photography/colour/000021.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "000013",
+      "img": "assets/photography/colour/000013.JPG",
+      "category": "Photography Color"
+    },
+    {
+      "title": "36",
+      "img": "assets/photography/colour/36.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "31",
+      "img": "assets/photography/colour/31.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "29",
+      "img": "assets/photography/colour/29.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "24",
+      "img": "assets/photography/colour/24.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "17",
+      "img": "assets/photography/colour/17.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "15",
+      "img": "assets/photography/colour/15.jpg",
+      "category": "Photography Color"
+    },
+    {
+      "title": "12",
+      "img": "assets/photography/colour/12.jpg",
+      "category": "Photography Color"
+    }
+  ],
+  "stats": {
+    "woodwork": 4,
+    "restorations": 1,
+    "photos": 23,
+    "total": 28
+  },
+  "featured": {
+    "title": "17",
+    "img": "assets/photography/colour/17.jpg",
+    "category": "Photography Color"
+  }
+}
