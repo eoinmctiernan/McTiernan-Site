@@ -724,7 +724,14 @@
                     url: "https://soundcloud.com/mackmctiernan/dont-think-twice-its-alright-eoin-mc-tiernan"
                 }
             ],
-            digital: []
+            digital: [
+                {
+                    id: 1,
+                    label: "Template",
+                    title: "Personal Finance Tracker",
+                    desc: "An Excel template for keeping track of everything."
+                }
+            ]
         };
 
         /* --- LOGIC --- */
@@ -1221,7 +1228,7 @@
                                             <h3 class="font-serif text-xl text-forest-mist">${p.title}</h3>
                                             <span class="font-mono text-[10px] uppercase tracking-widest text-forest-moss">0${i+1}</span>
                                         </div>
-                                        <p class="mt-2 text-sm text-forest-stone">${p.desc}</p>
+                                        ${p.desc ? `<p class="mt-2 text-sm text-forest-stone">${p.desc}</p>` : ''}
                                     </div>
                                 </button>
                             `).join('')}
@@ -1314,7 +1321,7 @@
                             </div>
                         ` : `
                             <div class="glass-forest p-8 text-forest-stone text-sm">
-                                Add digital projects to the DATA.digital list.
+                                Add digital projects to the DATA.digital list. Digital projects coming soon!
                             </div>
                         `}
                     </div>
